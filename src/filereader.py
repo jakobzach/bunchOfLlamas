@@ -3,19 +3,19 @@ import os
 
 load_dotenv()
 
-api_key = os.getenv("LLAMAINDEX_KEY")
+api_key = os.getenv("LLAMA_CLOUD_API_KEY")
 
 
 from llama_parse import LlamaParse
-from llama_index.core.program import LLMTextCompletionProgram
-import models
+from llama_index.core import SimpleDirectoryReader
 
-prompt_template_str = """\
-List all financing rounds for {legal_entity}. \
-"""
-
-rounds = LLMTextCompletionProgram.from_defaults(
-    output_cls = models.LegalEntity,
-    prompt_template_str = prompt_template_str,
-    verbose = True,
+parser = LlamaParse(
+    api_key=api_key,
+    result_type="markdown"  # "markdown" and "text" are available
 )
+
+def read_file():
+    file_extractor = {".pdf": parser}
+    reader = SimpleDirectoryReader("/Users/jakobzacherl/Library/Mobile Documents/com~apple~CloudDocs/bunch/bunchOfLlamas/testfiles", file_extractor=file_extractor)
+    documents = reader.load_data(show_progress=True, num_workers=1)
+    return documents
