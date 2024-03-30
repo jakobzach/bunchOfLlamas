@@ -1,7 +1,7 @@
 from filereader import read_file
 from llama_index.core.program import LLMTextCompletionProgram
 from llama_index.program.openai import OpenAIPydanticProgram
-import models
+import models_2
 
 def main():
     document = read_file()
@@ -12,7 +12,7 @@ def main():
     Extract all relevant information from {file_text}. Return "NULL" if a property cannot be found.\
     """
     program = LLMTextCompletionProgram.from_defaults(
-        output_cls = models.CapitalCall,
+        output_cls = models_2.CapitalCall,
         prompt_template_str = prompt_template_str,
         verbose = False
     )
