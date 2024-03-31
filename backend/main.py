@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from backend.api.v1.routers import items, files
+from backend.api.v1.routers import files
 from fastapi.responses import RedirectResponse
 # from fastapi.staticfiles import StaticFiles
 
@@ -15,7 +15,7 @@ app = FastAPI(
 
 app.include_router(files.router, prefix="/v1/files", tags=["files"])
 
-
+# doesn't work for some reason
 @app.get("/docs", include_in_schema=False)
 def docs_redirect():
     return RedirectResponse(url="/redoc")

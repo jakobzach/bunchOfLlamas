@@ -5,6 +5,7 @@ import models_2
 
 def main():
     document = read_file()
+    print(document)
     document_text = document[0].text
     #print(document[0].text)
 
