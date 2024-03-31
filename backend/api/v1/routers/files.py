@@ -2,7 +2,6 @@ from fastapi import APIRouter, File, UploadFile, Form, HTTPException
 from backend.api.utils.upload_utils import save_uploaded_files, save_uploaded_file
 from backend.api.utils.extract_utils import read_file,create_document_metadata,create_data_model
 from backend.api.data_models.response_models import FileMetadata,Category, CapitalCall, ConvertibleLoanAgreement, ExtractResponse
-from llama_index.core.program import LLMTextCompletionProgram
 from typing import List
 from dotenv import load_dotenv
 import logging
