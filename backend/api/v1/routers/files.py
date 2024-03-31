@@ -1,7 +1,7 @@
 from fastapi import APIRouter, File, UploadFile, Form, HTTPException
 from backend.api.utils.upload_utils import save_uploaded_files, save_uploaded_file
 from backend.api.utils.extract_utils import read_file,create_document_metadata,create_data_model
-from backend.api.data_models.response_models import Category, CapitalCall, ConvertibleLoanAgreement, ExtractResponse
+from backend.api.data_models.response_models import FileMetadata,Category, CapitalCall, ConvertibleLoanAgreement, ExtractResponse
 from llama_index.core.program import LLMTextCompletionProgram
 from typing import List
 from dotenv import load_dotenv
@@ -17,15 +17,11 @@ async def upload_multiple_files(files: List[UploadFile] = File(...)):
     saved_paths = await save_uploaded_files(files)
     return {"file_paths": saved_paths}
 
-@router.post("/extract/")
+@router.post("/extract/", response_model=ExtractResponse, description="Extract a pre-defined data model from a file.")
 async def extract_data_model(file: UploadFile = File(...), category: Category = None):
     logging.info(f"Extracting data for {file.filename} initiated...")
 
-    file_metadata = {
-        "fileName": file.filename,
-        "contentType": file.content_type,
-        "size": file.size
-    }
+    file_metadata = FileMetadata(fileName=file.filename, contentType=file.content_type, size=file.size)
 
     file_location = await save_uploaded_file(file)
     logging.info(f"File upload for {file.filename} successful...")

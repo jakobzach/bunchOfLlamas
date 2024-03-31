@@ -60,10 +60,56 @@ class ConvertibleLoanAgreement(DocumentData):
     valuationDiscount: float = Field(...,description="Discount on the post-money valuation for which the loan converts to shares")
     
 
+class FileMetadata(BaseModel):
+    """Data model for a file metadata."""
+    fileName: str
+    contentType: str
+    size: int
 
+    class Config:
+        schema_extra = {
+            "fileName": "Capital Call 1 - Valentina Pape - 13251239173529.pdf",
+            "contentType": "application/pdf",
+            "size": 240428
+        }
 
 class ExtractResponse(BaseModel):
     """Data model for an extract response."""
-    fileMetadata: dict = Field(..., description="Metadata of the file such as filename, type, etc.")
+    fileMetadata: FileMetadata
     documentMetadata: DocumentMetadata
     data: Any
+
+    class Config:
+        schema_extra = {
+            "fileMetadata": {
+                "fileName": "Capital Call 1 - Valentina Pape - 13251239173529.pdf",
+                "contentType": "application/pdf",
+                "size": 240428
+            },
+            "documentMetadata": {
+                "category": "CapitalCall",
+                "entities": [
+                    "Cherry Fund IV GmbH & Co. KG",
+                    "Valentina Pape"
+                ],
+                "summary": "Capital Call 1 for Cherry Fund IV GmbH & Co. KG with details of funds to be transferred by Valentina Pape.",
+                "containsFinancials": True
+            },
+            "data": {
+                "type": "CapitalCall",
+                "name": "Valentina Pape",
+                "date": "2023-10-19T00:00:00",
+                "deadline": "2023-11-19T00:00:00",
+                "commitment": 500000.0,
+                "equityShare": 0.02,
+                "previouscontributionToTarget": 0.0,
+                "contributionToTarget": 99880.0,
+                "organizationalExpenses": 20.0,
+                "liquidityBuffer": 0.0,
+                "bunchFee": 100.0,
+                "adjustmentsFromPreviousCapitalCalls": 0.0,
+                "totalCapitalCalled": 100000.0,
+                "outstandingCommitmentToTarget": 40000.0,
+                "currency": "EUR"
+            }
+        }
