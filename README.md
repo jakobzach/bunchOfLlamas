@@ -13,3 +13,8 @@ docker build -t bunchofllamasapp .
 ```bash
 docker run --name bunchofllamas -p 80:80 -d --env-file ../.env bunchofllamasapp
 ```
+
+or just run
+```bash
+docker-compose up -d
+```
