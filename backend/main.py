@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from backend.api.v1.routers import files
+from api.v1.routers import files
 from fastapi.responses import RedirectResponse
 # from fastapi.staticfiles import StaticFiles
 

@@ -5,7 +5,7 @@ import logging
 from llama_parse import LlamaParse
 from llama_index.core import SimpleDirectoryReader
 from llama_index.core.program import LLMTextCompletionProgram
-from backend.api.data_models import response_models
+from api.data_models import response_models
 
 logging.basicConfig(level=logging.INFO)
 load_dotenv()
