@@ -8,6 +8,7 @@ bs4==0.0.2
 certifi==2024.2.2
 charset-normalizer==3.3.2
 click==8.1.7
+Cython==3.0.10
 dataclasses-json==0.6.4
 Deprecated==1.2.14
 dirtyjson==1.0.8
