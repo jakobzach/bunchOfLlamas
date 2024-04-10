@@ -13,6 +13,7 @@ app = FastAPI(
     }
 )
 
+
 app.include_router(files.router, prefix="/v1/files", tags=["files"])
 
 # doesn't work for some reason

@@ -20,5 +20,8 @@ async def save_uploaded_file(upload_file: UploadFile) -> str:
     os.makedirs(os.path.dirname(file_location), exist_ok=True)
     with open(file_location, "wb+") as file_object:
         file_object.write(await upload_file.read())
-        print("Successfully saved file at: " + file_location)
+        logging.info(f"Successfully saved file at: {file_location}.")
     return file_location
+
+async def delete_file(file_location: str):
+    os.remove(file_location)

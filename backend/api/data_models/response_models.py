@@ -15,6 +15,62 @@ class Category(Enum):
     SHA = "ShareholderAgreement"
     Other = "Other"
 
+class MappingCategory(Enum):
+    """Enum for categories of mapped columns."""
+    Investment = "Investment"
+
+class Sector(Enum):
+    """Enum for economic sectors/industries."""
+    Aerospace = "Aerospace"
+    Agriculture = "Agriculture"
+    AI_ML = "Artificial Intelligence & Machine Learning"
+    AR_VR = "Augmented & Virtual Reality"
+    Beauty = "Beauty & Personal Care"
+    Biotech = "Biotechnology & Life Sciences"
+    Blockchain_Crypto = "Blockchain & Cryptocurrency"
+    Cloud_DevOps = "Cloud Computing & DevOps"
+    Construction_RealEstate = "Construction & Real Estate"
+    Cybersecurity = "Cybersecurity"
+    DataAnalytics_BigData = "Data Analytics & Big Data"
+    DigitalMedia_Entertainment = "Digital Media & Entertainment"
+    ECommerce_Retail = "E-commerce & Retail"
+    Education = "Education"
+    Energy = "Energy"
+    FinancialServices = "Financial Services"
+    Food_Beverages = "Food & Beverages"
+    Gaming_ESports = "Gaming & eSports"
+    Healthtech_MedicalDevices = "Healthtech & Medical Devices"
+    HR_Workforce = "HR & Workforce"
+    Insurance = "Insurance"
+    IoT = "Internet of Things (IoT)"
+    Manufacturing = "Manufacturing"
+    Mobility = "Mobility"
+    Nutrition_Wellness = "Nutrition & Wellness"
+    Pharmaceuticals_DrugDevelopment = "Pharmaceuticals & Drug Development"
+    Robotics_Automation = "Robotics & Automation"
+    Semiconductors_Microchips = "Semiconductors & Microchips"
+    SupplyChain_Logistics = "Supply Chain & Logistics"
+    Sustainability = "Sustainability"
+    Other = "Other"
+
+class BusinessModel(Enum):
+    """Enum for business models."""
+    Advertisement = "Advertisement"
+    Affiliate = "Affiliate"
+    Licensing = "Licensing"
+    Marketplace = "Marketplace"
+    OneTimeSales = "One-Time Sales"
+    PayPerUse = "Pay-Per-Use"
+    SaaS = "Software-as-a-Service (SaaS)"
+    Subscription = "Subscription"
+    Other = "Other"
+
+class InvestmentType(Enum):
+    """Enum for investment types."""
+    Company = "Company"
+    Fund = "Fund"
+    Token = "Token"
+
 class DocumentMetadata(BaseModel):
     """Metadata of a document."""
     category: Category = Field(..., description="Unique category in this text chunk. ")
@@ -32,6 +88,19 @@ class DocumentMetadata(BaseModel):
 #superclass of all document data models
 class DocumentData(BaseModel):
     type: Category = Field(..., description="Unique category for this text chunk.")
+
+class Investment(DocumentData):
+    """Data model for a fund's investment into another company or alternative asset."""
+    companyName: str = Field(None, description="Name of company or alternative asset being invested into.")
+    currency: Optional[Annotated[str, Field(max_length=3, min_length=3)]] = Field(None, description="Currency of company or alternative asset being invested into.")
+    type: Optional[InvestmentType] = Field(None, description="Type of company or alternative asset being invested into.")
+    sector: Optional[Sector] = Field(None, description="Sector of company or alternative asset being invested into.")
+    businessModel: Optional[str] = Field(None, description="Business model of company or alternative asset being invested into.")
+    website: Optional[str] = Field(None, description="Website of company or alternative asset being invested into.")
+
+class InvestmentList(BaseModel):
+    """List of Investment data models."""
+    investments: List[Investment]
 
 class CapitalCall(DocumentData):
     """Data model for a single investor's share of a capital call."""
@@ -64,6 +133,7 @@ class FileMetadata(BaseModel):
     """Data model for a file metadata."""
     fileName: str
     contentType: str
+    extension: str
     size: int
 
     class Config:
@@ -112,4 +182,28 @@ class ExtractResponse(BaseModel):
                 "outstandingCommitmentToTarget": 40000.0,
                 "currency": "EUR"
             }
+        }
+
+class InvestmentColumns(BaseModel):
+    """Mapping of columns of a csv to a data model."""
+    companyName: Optional[str] = Field(None, description="Name of a column header for a company or alternative asset being invested into.")
+    currency: Optional[str] = Field(None, description="Name of a column header for a currency.")
+    type: Optional[str] = Field(None, description="Name of a column header for a type of company or alternative asset being invested into.")
+    sector: Optional[str] = Field(None, description="Name of a column header for a sector of company or alternative asset being invested into.")
+    businessModel: Optional[str] = Field(None, description="Name of a column header for a business model of company or alternative asset being invested into.")
+    website: Optional[str] = Field(None, description="Name of a column header for a website of company or alternative asset being invested into.")
+
+class MappingResponse(BaseModel):
+    """Data model for a mapping response."""
+    fileMetadata: FileMetadata
+    data: Any
+
+    class Config:
+        schema_extra = {
+            "fileMetadata": {
+                "fileName": "Capital Call 1 - Valentina Pape - 13251239173529.pdf",
+                "contentType": "application/pdf",
+                "size": 240428
+            },
+            "data": {}
         }
