@@ -61,7 +61,7 @@ async def create_data_model(document: dict, data_model) -> dict:
     return result
 
 prompt_template_str_mapping = """\
-Map the following columns to {data_model}: {header}. Return "NULL" if a property cannot be found.\
+Map the following columns to {data_model}: {header}. Return a null value if a property cannot be found.\
 """
 
 async def create_mapping_model(header: List, data_model) -> dict:
