@@ -39,7 +39,7 @@ async def read_file(file_location: str, extension: str) -> List:
     return documents
 
 prompt_template_str = """\
-Extract all relevant information from {document_text}. Return "NULL" if a property cannot be found.\
+Extract all relevant information from {document_text}. Return a null value if a property cannot be found.\
 """
 # prompt_template_str = """\
 #         Restrict your answer to only the following information:
