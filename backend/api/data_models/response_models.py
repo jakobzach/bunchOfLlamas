@@ -9,11 +9,8 @@ import datetime
 class ModelCategory(Enum):
     """Enum for metadata categories."""
     CapitalCall = "CapitalCall"
-    LPA = "LimitedPartnershipAgreement"
-    EquityRound = "EquityRound"
-    CLA = "ConvertibleLoanAgreement"
-    SHA = "ShareholderAgreement"
     GeneralInformation = "GeneralInformation"
+    OperationalKPIs = "OperationalKPIs"
     Other = "Other"
 
 class MappingCategory(Enum):

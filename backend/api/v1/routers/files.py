@@ -1,7 +1,7 @@
 from fastapi import APIRouter, File, UploadFile, Form, HTTPException, Query
 from api.utils.upload_utils import save_uploaded_files, save_uploaded_file, delete_file
 from api.utils.extract_utils import read_file,create_document_metadata,create_data_model, return_csv_column_names, create_mapping_model
-from api.data_models.response_models import FileMetadata, ModelCategory, CapitalCall, ConvertibleLoanAgreement, ExtractResponse, MappingResponse, MappingCategory, InvestmentColumns
+from api.data_models.response_models import FileMetadata, ModelCategory, CapitalCall, ConvertibleLoanAgreement, ExtractResponse, MappingResponse, MappingCategory, InvestmentColumns, GeneralCompanyInfo, OperationalKPIs
 from typing import List
 from dotenv import load_dotenv
 import logging
@@ -37,7 +37,9 @@ async def extract_data_model(file: UploadFile = File(..., description="Currently
 
     category_to_data_model = {
         ModelCategory.CapitalCall: CapitalCall,
-        ModelCategory.CLA: ConvertibleLoanAgreement
+        ModelCategory.CLA: ConvertibleLoanAgreement,
+        ModelCategory.GeneralInformation: GeneralCompanyInfo,
+        ModelCategory.OperationalKPIs: OperationalKPIs
     }
     category = category or document_metadata.category
     data_model = category_to_data_model.get(category)
