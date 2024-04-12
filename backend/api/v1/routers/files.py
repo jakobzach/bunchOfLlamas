@@ -1,7 +1,7 @@
 from fastapi import APIRouter, File, UploadFile, Form, HTTPException, Query
 from api.utils.upload_utils import save_uploaded_files, save_uploaded_file, delete_file
 from api.utils.extract_utils import read_file,create_document_metadata,create_data_model, return_csv_column_names, create_mapping_model
-from api.data_models.response_models import FileMetadata,Category, CapitalCall, ConvertibleLoanAgreement, ExtractResponse, MappingResponse, MappingCategory, InvestmentColumns
+from api.data_models.response_models import FileMetadata, ModelCategory, CapitalCall, ConvertibleLoanAgreement, ExtractResponse, MappingResponse, MappingCategory, InvestmentColumns
 from typing import List
 from dotenv import load_dotenv
 import logging
@@ -17,7 +17,7 @@ async def upload_multiple_files(files: List[UploadFile] = File(...)):
     return {"file_paths": saved_paths}
 
 @router.post("/extract/", response_model=ExtractResponse, description="Extract a pre-defined data model from a file.")
-async def extract_data_model(file: UploadFile = File(..., description="Currently, only the following file types are supported: ['.pdf', '.xml.doc', '.docx', '.pptx', '.rtf', '.pages', '.key', '.epub']"), category: Category = None):
+async def extract_data_model(file: UploadFile = File(..., description="Currently, only the following file types are supported: ['.pdf', '.xml.doc', '.docx', '.pptx', '.rtf', '.pages', '.key', '.epub']"), category: ModelCategory = None):
     logging.info(f"/extract for {file.filename} initiated...")
 
     file_metadata = FileMetadata(fileName=file.filename, contentType=file.content_type, extension="."+file.filename.split(".")[-1], size=file.size)
@@ -36,8 +36,8 @@ async def extract_data_model(file: UploadFile = File(..., description="Currently
     logging.info(f"Reading document metadata for {file.filename} successful...")
 
     category_to_data_model = {
-        Category.CapitalCall: CapitalCall,
-        Category.CLA: ConvertibleLoanAgreement
+        ModelCategory.CapitalCall: CapitalCall,
+        ModelCategory.CLA: ConvertibleLoanAgreement
     }
     category = category or document_metadata.category
     data_model = category_to_data_model.get(category)

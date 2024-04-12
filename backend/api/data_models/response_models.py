@@ -6,13 +6,14 @@ from enum import Enum
 
 import datetime
 
-class Category(Enum):
+class ModelCategory(Enum):
     """Enum for metadata categories."""
     CapitalCall = "CapitalCall"
     LPA = "LimitedPartnershipAgreement"
     EquityRound = "EquityRound"
     CLA = "ConvertibleLoanAgreement"
     SHA = "ShareholderAgreement"
+    GeneralInformation = "GeneralInformation"
     Other = "Other"
 
 class MappingCategory(Enum):
@@ -73,7 +74,7 @@ class InvestmentType(Enum):
 
 class DocumentMetadata(BaseModel):
     """Metadata of a document."""
-    category: Category = Field(..., description="Unique category in this text chunk. ")
+    category: ModelCategory = Field(..., description="Unique category in this text chunk. ")
     entities: List[str] = Field(..., description="Unique entities in this text chunk.")
     summary: str = Field(..., description="A concise summary of this text chunk. Maximum of 250 characters.")
     containsFinancials: bool = Field(..., description="Whether the text chunk contains any company performance metrics or financial data.",)
@@ -87,20 +88,47 @@ class DocumentMetadata(BaseModel):
     
 #superclass of all document data models
 class DocumentData(BaseModel):
-    type: Category = Field(..., description="Unique category for this text chunk.")
+    type: ModelCategory = Field(..., description="Unique category for this text chunk.")
 
-class Investment(DocumentData):
-    """Data model for a fund's investment into another company or alternative asset."""
-    companyName: str = Field(None, description="Name of company or alternative asset being invested into.")
+class GeneralCompanyInfo(DocumentData):
+    """Data model for a company (primarily a startup) or alternative asset."""
+    companyName: str = Field(..., description="Name of company or alternative asset being invested into.")
+    companyDescription: Optional[str] = Field(None, description="Description of company or alternative asset being invested into.")
+    website: Optional[str] = Field(None, description="Website of company or alternative asset being invested into.")
     currency: Optional[Annotated[str, Field(max_length=3, min_length=3)]] = Field(None, description="Currency of company or alternative asset being invested into.")
     type: Optional[InvestmentType] = Field(None, description="Type of company or alternative asset being invested into.")
     sector: Optional[Sector] = Field(None, description="Sector of company or alternative asset being invested into.")
     businessModel: Optional[str] = Field(None, description="Business model of company or alternative asset being invested into.")
-    website: Optional[str] = Field(None, description="Website of company or alternative asset being invested into.")
+    primaryOperatingCountry: Optional[str] = Field(None, description="Primary operating country of company or alternative asset being invested into.")
+    otherOperatingCountries: Optional[List[str]] = Field(None, description="Other operating countries of company or alternative asset being invested into.")
+    founders: Optional[List[str]] = Field(None, description="List of first and last names of founders of the company or alternative asset being invested into.")
+    
+class RecurrencyFrequency(Enum):
+    """Enum for recurrency frequency."""
+    Yearly = "Yearly"
+    Quarterly = "Quarterly"
+    Monthly = "Monthly"
+    Weekly = "Weekly"
+    Daily = "Daily"
 
-class InvestmentList(BaseModel):
-    """List of Investment data models."""
-    investments: List[Investment]
+class RecurrentRevenue(BaseModel):
+    """Data model for recurrent revenue."""
+    amount: float = Field(..., description="Amount of recurrent revenue.")
+    recurrencyFrequency: RecurrencyFrequency = Field(..., description="Recurrency frequency of recurrent revenue. Default is yearly.")
+
+class Revenue(BaseModel):
+    """Data model for revenue. Has to have either oneTimeRevenue or recurrentRevenue and can have both."""
+    currency: Annotated[str, Field(max_length=3, min_length=3)] = Field(..., description="Currency of revenue. Default is EUR.")
+    recurrentRevenue: Optional[RecurrentRevenue] = Field(None, description="Recurrent revenue.")
+    oneTimeRevenue: Optional[float] = Field(None, description="One-time revenue.")
+
+class OperationalKPIs(DocumentData):
+    """Data model for a startup's operational KPIs based on a periodical update."""
+    date: datetime.datetime = Field(None, description="Date of update.")
+    revenue: Optional[Revenue] = Field(None, description="Revenue. How much money is being generated at time of update.")
+    cashBalance: Optional[float] = Field(None, description="Cash balance. How much money is available at time of update.")
+    monthlyBurn: Optional[float] = Field(None, description="Monthly burn. How much money is being spent per month (= negative cashflow).")
+    ftes: Optional[float] = Field(None, description="FTEs. How many full-time employees are in the company at time of update.")
 
 class CapitalCall(DocumentData):
     """Data model for a single investor's share of a capital call."""
